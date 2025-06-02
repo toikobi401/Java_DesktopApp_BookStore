@@ -1,0 +1,126 @@
+@startuml
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define primary_key(x) <u>x</u>
+
+skinparam linetype ortho
+
+Table(Author, "Author") {
+  primary_key(AuthorID) : int
+  AuthorName : nvarchar(255)
+}
+
+Table(Book, "Book") {
+  primary_key(BookID) : int
+  BookName : nvarchar(50)
+  PublisherID : int
+  Description : nvarchar(255)
+  Price : float
+  Quantity : int
+}
+
+Table(BookAuthor, "BookAuthor") {
+  BookID : int
+  AuthorID : int
+}
+
+Table(Category, "Category") {
+  primary_key(CategoryID) : int
+  CategoryName : nvarchar(50)
+  Description : nvarchar(250)
+}
+
+Table(BookCategory, "BookCategory") {
+  BookID : int
+  CategoryID : int
+}
+
+Table(Shelf, "Shelf") {
+  primary_key(ShelfID) : int
+  ShelfCode : nvarchar(50)
+  Location : nvarchar(50)
+  CategoryID : int
+}
+
+Table(BookShelf, "BookShelf") {
+  ShelfID : int
+  BookID : int
+}
+
+Table(User, "User") {
+  primary_key(UserID) : int
+  Username : nvarchar(50)
+  Password : nvarchar(50)
+  Fullname : nvarchar(255)
+  Address : nvarchar(255)
+}
+
+Table(InStoreOrder, "InStoreOrder") {
+  primary_key(StoreOrderID) : int
+  EmployeeID : int
+  OrderDate : date
+  TotalAmount : float
+}
+
+Table(OnlineOrder, "OnlineOrder") {
+  primary_key(OnlineOrderID) : int
+  CustomerID : int
+  OrderDate : date
+  Status : nvarchar(50)
+  TotalAmount : float
+}
+
+Table(OrderDetail, "OrderDetail") {
+  primary_key(OrderDetailID) : int
+  OnlineOrderID : int
+  BookID : int
+  Quantity : int
+  UnitPrice : float
+  StoreOrderID : int
+}
+
+Table(Role, "Role") {
+  primary_key(RoleID) : int
+  RoleName : nvarchar(50)
+  Description : nvarchar(255)
+}
+
+Table(Feature, "Feature") {
+  primary_key(FeatureID) : int
+  Feature : nvarchar(255)
+}
+
+Table(RoleFeature, "RoleFeature") {
+  RoleID : int
+  FeatureID : int
+}
+
+Table(UserRole, "UserRole") {
+  UserID : int
+  RoleID : int
+}
+
+/' Relationships '/
+Author ||--o{ BookAuthor : "has"
+Book ||--o{ BookAuthor : "written by"
+
+Book ||--o{ BookCategory : "categorized"
+Category ||--o{ BookCategory : "contains"
+
+Shelf ||--o{ BookShelf : "holds"
+Book ||--o{ BookShelf : "placed on"
+
+Category ||--|| Shelf : "has"
+
+User ||--o{ InStoreOrder : "makes"
+User ||--o{ OnlineOrder : "makes"
+
+InStoreOrder ||--o{ OrderDetail : "contains"
+OnlineOrder ||--o{ OrderDetail : "contains"
+Book ||--o{ OrderDetail : "ordered"
+
+Role ||--o{ RoleFeature : "has"
+Feature ||--o{ RoleFeature : "belongs to"
+
+User ||--o{ UserRole : "has"
+Role ||--o{ UserRole : "assigned to"
+@enduml
